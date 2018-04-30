@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Calculate sha256 signature</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="lib/hmac-sha256.js"></script>
+    <script src="lib/enc-base64.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var content = $('#content');
+            var secret = $('#secret');
+            var result = $('#result');
+            
+            function calculate() {
+                var contentText = content.val();
+                var secretText = secret.val();
+                if (contentText.length > 0 && secretText.length > 0) {
+                    var hash = CryptoJS.HmacSHA256(contentText, secretText);
+                    var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+                    result.text("X-Bolt-Hmac-Sha256: " + hashInBase64);
+                }
+            }
+            content.bind('input propertychange', calculate);
+            secret.bind('input propertychange', calculate);
+        });
+    </script>
+</head>
+
+<body>
+    <body class="bg-light">
+        <div class="container">
+            <div class="py-5 text-center">
+                <h4>Signature calculator</h4>
+                <div class="mb-3" style="text-align:left">
+                    <label for="content">Content to sign (HTTP Body)</label>
+                    <textarea type="text" class="form-control" id="content" placeholder="content to sign"></textarea>
+                </div>
+                <div class="mb-3" style="text-align:left">
+                    <label for="secret">Signing secret</label>
+                    <input type="text" class="form-control" id="secret" placeholder="signing secret">
+                </div>
+
+                <hr style="margin-top: 30px;" />
+
+                <div class="mb-3" style="text-align:left">
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </body>
+</html>
